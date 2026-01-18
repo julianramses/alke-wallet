@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alke Wallet - Enviar Dinero</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="bg-light">
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary sticky-top">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="menu.html">
+                <i class="fas fa-arrow-left me-2"></i>Volver
+            </a>
+            <span class="navbar-text text-white">
+                <i class="fas fa-wallet me-2"></i>Alke Wallet
+            </span>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <!-- Current Balance -->
+                <div class="card shadow-sm mb-4">
+                    <div class="card-body text-center py-4">
+                        <p class="text-muted mb-1">Saldo Disponible</p>
+                        <h2 class="display-5 fw-bold text-primary mb-0">
+                            $<span id="currentBalance">50,000</span>
+                        </h2>
+                    </div>
+                </div>
+
+                <!-- Send Money Form -->
+                <div class="card shadow-sm">
+                    <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">
+                            <i class="fas fa-paper-plane me-2"></i>Enviar Dinero
+                        </h5>
+                        <button class="btn btn-sm btn-light" data-bs-toggle="modal" data-bs-target="#addContactModal">
+                            <i class="fas fa-user-plus me-1"></i>Nuevo Contacto
+                        </button>
+                    </div>
+                    <div class="card-body">
+                        <form id="sendMoneyForm">
+                            <div class="mb-4">
+                                <label for="contactSearch" class="form-label">Buscar Contacto</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-search"></i></span>
+                                    <input type="text" class="form-control" id="contactSearch" 
+                                           placeholder="Buscar por nombre o email...">
+                                </div>
+                            </div>
+
+                            <div class="mb-4" id="contactsList">
+                                <label class="form-label">Contactos Recientes</label>
+                                <div class="contact-grid" id="contactsContainer">
+                                    <!-- Contacts will be loaded here -->
+                                </div>
+                            </div>
+
+                            <div class="mb-4">
+                                <label for="selectedContact" class="form-label">Destinatario Seleccionado</label>
+                                <input type="text" class="form-control" id="selectedContact" 
+                                       placeholder="Selecciona un contacto" readonly required>
+                                <input type="hidden" id="selectedContactId">
+                            </div>
+
+                            <div class="mb-4">
+                                <label for="sendAmount" class="form-label">Monto a Enviar</label>
+                                <div class="input-group input-group-lg">
+                                    <span class="input-group-text">$</span>
+                                    <input type="number" class="form-control" id="sendAmount" 
+                                           placeholder="0.00" min="1" step="0.01" required>
+                                </div>
+                            </div>
+
+                            <div class="mb-4">
+                                <label class="form-label">Montos Rápidos</label>
+                                <div class="d-grid gap-2 d-md-flex">
+                                    <button type="button" class="btn btn-outline-primary quick-amount" data-amount="500">
+                                        $500
+                                    </button>
+                                    <button type="button" class="btn btn-outline-primary quick-amount" data-amount="1000">
+                                        $1,000
+                                    </button>
+                                    <button type="button" class="btn btn-outline-primary quick-amount" data-amount="5000">
+                                        $5,000
+                                    </button>
+                                    <button type="button" class="btn btn-outline-primary quick-amount" data-amount="10000">
+                                        $10,000
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="mb-4">
+                                <label for="sendNote" class="form-label">Mensaje (Opcional)</label>
+                                <textarea class="form-control" id="sendNote" rows="3" 
+                                          placeholder="Agrega un mensaje para el destinatario..."></textarea>
+                            </div>
+
+                            <div class="alert alert-warning d-none" id="insufficientFunds">
+                                <i class="fas fa-exclamation-triangle me-2"></i>
+                                Fondos insuficientes para esta transferencia
+                            </div>
+
+                            <div class="d-grid gap-2">
+                                <button type="submit" class="btn btn-primary btn-lg" id="sendBtn">
+                                    <i class="fas fa-paper-plane me-2"></i>Enviar Dinero
+                                </button>
+                                <a href="menu.html" class="btn btn-outline-secondary">
+                                    Cancelar
+                                </a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Contact Modal -->
+    <div class="modal fade" id="addContactModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <i class="fas fa-user-plus me-2"></i>Agregar Nuevo Contacto
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="addContactForm">
+                        <div class="mb-3">
+                            <label for="newContactName" class="form-label">Nombre Completo</label>
+                            <input type="text" class="form-control" id="newContactName" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="newContactEmail" class="form-label">Email</label>
+                            <input type="email" class="form-control" id="newContactEmail" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="newContactPhone" class="form-label">Teléfono (Opcional)</label>
+                            <input type="tel" class="form-control" id="newContactPhone" 
+                                   placeholder="+56 9 1234 5678">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary" id="saveContactBtn">
+                        <i class="fas fa-save me-2"></i>Guardar Contacto
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success Modal -->
+    <div class="modal fade" id="successModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-body text-center py-5">
+                    <div class="success-icon mb-4">
+                        <i class="fas fa-check-circle text-success"></i>
+                    </div>
+                    <h3 class="mb-3">¡Transferencia Exitosa!</h3>
+                    <p class="text-muted">Has enviado <strong>$<span id="sentAmount"></span></strong> a <strong id="sentTo"></strong></p>
+                    <div class="mt-4">
+                        <a href="menu.html" class="btn btn-primary me-2">Volver al Inicio</a>
+                        <a href="transactions.html" class="btn btn-outline-primary">Ver Movimientos</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
+    <script src="js/sendmoney.js"></script>
+</body>
+</html>
