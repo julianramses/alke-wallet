@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alke Wallet - Movimientos</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="bg-light">
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary sticky-top">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="menu.html">
+                <i class="fas fa-arrow-left me-2"></i>Volver
+            </a>
+            <span class="navbar-text text-white">
+                <i class="fas fa-wallet me-2"></i>Alke Wallet
+            </span>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col-12">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2 class="mb-0"><i class="fas fa-history me-2"></i>Historial de Movimientos</h2>
+                </div>
+            </div>
+        </div>
+
+        <!-- Summary Cards -->
+        <div class="row mb-4">
+            <div class="col-md-4 mb-3">
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center">
+                            <div class="stat-icon bg-success-soft me-3">
+                                <i class="fas fa-arrow-down text-success"></i>
+                            </div>
+                            <div>
+                                <p class="text-muted mb-0 small">Ingresos</p>
+                                <h4 class="mb-0 text-success">$<span id="totalIncome">0</span></h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-3">
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center">
+                            <div class="stat-icon bg-danger-soft me-3">
+                                <i class="fas fa-arrow-up text-danger"></i>
+                            </div>
+                            <div>
+                                <p class="text-muted mb-0 small">Egresos</p>
+                                <h4 class="mb-0 text-danger">$<span id="totalExpense">0</span></h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-3">
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center">
+                            <div class="stat-icon bg-primary-soft me-3">
+                                <i class="fas fa-receipt text-primary"></i>
+                            </div>
+                            <div>
+                                <p class="text-muted mb-0 small">Total Movimientos</p>
+                                <h4 class="mb-0 text-primary"><span id="totalTransactions">0</span></h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filters -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <div class="row g-3">
+                            <div class="col-md-4">
+                                <label for="filterType" class="form-label small">Tipo</label>
+                                <select class="form-select" id="filterType">
+                                    <option value="all">Todos</option>
+                                    <option value="deposit">Depósitos</option>
+                                    <option value="transfer">Transferencias</option>
+                                    <option value="receive">Recibidos</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="filterDate" class="form-label small">Período</label>
+                                <select class="form-select" id="filterDate">
+                                    <option value="all">Todo el tiempo</option>
+                                    <option value="today">Hoy</option>
+                                    <option value="week">Esta semana</option>
+                                    <option value="month">Este mes</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="searchTransaction" class="form-label small">Buscar</label>
+                                <input type="text" class="form-control" id="searchTransaction" 
+                                       placeholder="Buscar por descripción...">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Transactions List -->
+        <div class="row">
+            <div class="col-12">
+                <div class="card shadow-sm">
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover mb-0">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Fecha</th>
+                                        <th>Tipo</th>
+                                        <th>Descripción</th>
+                                        <th class="text-end">Monto</th>
+                                        <th class="text-center">Estado</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="transactionsList">
+                                    <!-- Transactions will be loaded here -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Empty State -->
+                <div class="text-center py-5 d-none" id="emptyState">
+                    <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
+                    <h5 class="text-muted">No hay transacciones</h5>
+                    <p class="text-muted">Aún no has realizado ninguna transacción</p>
+                    <a href="deposit.html" class="btn btn-primary mt-3">Realizar un Depósito</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Transaction Detail Modal -->
+    <div class="modal fade" id="transactionModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Detalle de Transacción</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="transaction-detail">
+                        <div class="text-center mb-4">
+                            <div class="transaction-icon mb-3" id="modalIcon">
+                                <i class="fas fa-exchange-alt"></i>
+                            </div>
+                            <h3 class="mb-0" id="modalAmount">$0</h3>
+                            <p class="text-muted" id="modalType">Tipo</p>
+                        </div>
+                        <hr>
+                        <div class="detail-row">
+                            <span class="text-muted">Descripción:</span>
+                            <strong id="modalDescription"></strong>
+                        </div>
+                        <div class="detail-row">
+                            <span class="text-muted">Fecha:</span>
+                            <strong id="modalDate"></strong>
+                        </div>
+                        <div class="detail-row">
+                            <span class="text-muted">Estado:</span>
+                            <span class="badge bg-success" id="modalStatus">Completada</span>
+                        </div>
+                        <div class="detail-row" id="modalNoteRow" style="display: none;">
+                            <span class="text-muted">Nota:</span>
+                            <span id="modalNote"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+    <script src="js/transactions.js"></script>
+</body>
+</html>
